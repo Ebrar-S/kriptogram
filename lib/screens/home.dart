@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart'; // For custom fonts
 
 void main() {
   runApp(MaterialApp(
     home: CryptogramGameHome(),
     theme: ThemeData(
       primarySwatch: Colors.blue,
+      textTheme: GoogleFonts.nunitoTextTheme(), // Use a modern font
     ),
   ));
 }
@@ -27,8 +29,8 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
   String encryptedPhrase = "";
   final Map<int, String> guessedLetters = {};
   final Map<String, String> encryptionMap = {};
-  final Map<int, FocusNode> focusNodes = {}; // FocusNode for each TextField
-  int? focusedIndex; // Track the currently focused TextField index
+  final Map<int, FocusNode> focusNodes = {};
+  int? focusedIndex;
 
   @override
   void initState() {
@@ -67,14 +69,13 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
   bool _isDuplicateWithDifferentEncryption(int index, Map<int, String> guessedLetters) {
     String? currentValue = guessedLetters[index];
     if (currentValue == null || currentValue.isEmpty) {
-      return false; // No value, no duplication
+      return false;
     }
 
-    // Check for the same letter mapped to different encryptions
     for (int i = 0; i < phrase.length; i++) {
       if (i != index &&
-          guessedLetters[i] == currentValue && // Same guessed letter
-          encryptedPhrase[i] != encryptedPhrase[index]) { // Different encryption
+          guessedLetters[i] == currentValue &&
+          encryptedPhrase[i] != encryptedPhrase[index]) {
         return true;
       }
     }
@@ -84,17 +85,14 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
   void _onKeyPressed(String letter) {
     if (focusedIndex != null) {
       setState(() {
-        // Get the encrypted character at the focused index
         String encryptedChar = encryptedPhrase[focusedIndex!];
 
-        // Update all TextFields with the same encrypted character
         for (int i = 0; i < encryptedPhrase.length; i++) {
           if (encryptedPhrase[i] == encryptedChar) {
             guessedLetters[i] = letter;
           }
         }
 
-        // Find the next empty text field with the same encryption
         int nextIndex = -1;
         for (int i = 0; i < encryptedPhrase.length; i++) {
           if (encryptedPhrase[i] == encryptedChar && (guessedLetters[i] == null || guessedLetters[i]!.isEmpty)) {
@@ -103,7 +101,6 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
           }
         }
 
-        // If no empty text field with the same encryption is found, find the next empty text field
         if (nextIndex == -1) {
           for (int i = 0; i < encryptedPhrase.length; i++) {
             if (encryptedPhrase[i] != ' ' && (guessedLetters[i] == null || guessedLetters[i]!.isEmpty)) {
@@ -113,16 +110,12 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
           }
         }
 
-        // Move focus to the next empty text field
         if (nextIndex != -1) {
           focusNodes[nextIndex]?.requestFocus();
           focusedIndex = nextIndex;
         } else {
-          // If no empty text field is found, unfocus the current one
           focusNodes[focusedIndex!]?.unfocus();
           focusedIndex = null;
-
-          // Check if the solution is correct
           _checkSolution(context, phrase, guessedLetters);
         }
       });
@@ -132,196 +125,271 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
   void _onDeletePressed() {
     if (focusedIndex != null) {
       setState(() {
-        // Get the encrypted character at the focused index
         String encryptedChar = encryptedPhrase[focusedIndex!];
 
-        // Delete the letter from all TextFields with the same encrypted character
         for (int i = 0; i < encryptedPhrase.length; i++) {
           if (encryptedPhrase[i] == encryptedChar) {
             guessedLetters.remove(i);
           }
         }
 
-        focusNodes[focusedIndex!]?.unfocus(); // Unfocus after deleting
+        focusNodes[focusedIndex!]?.unfocus();
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cryptogram Game'),
+        title: Text(
+          'Kriptogram Oyunu',
+          style: GoogleFonts.nunito(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue.shade800,
+        elevation: 0,
+        centerTitle: true,
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'Select a Phrase',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade800, Colors.orange.shade300], // Lighter orange
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: Text(
+                  'Cümle Seçin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            // Add phrase selection buttons to the drawer
-            ...phrases.asMap().entries.map((entry) {
-              int index = entry.key;
-              String phrase = entry.value;
-              return ListTile(
-                title: Text('Phrase ${index + 1}'),
-                onTap: () {
-                  changePhrase(index); // Change the phrase
-                  Navigator.pop(context); // Close the drawer
-                },
-              );
-            }).toList(),
-          ],
+              ...phrases.asMap().entries.map((entry) {
+                int index = entry.key;
+                String phrase = entry.value;
+                return ListTile(
+                  title: Text(
+                    'Cümle ${index + 1}',
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onTap: () {
+                    changePhrase(index);
+                    Navigator.pop(context);
+                  },
+                );
+              }).toList(),
+            ],
+          ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          // Display the cryptogram
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final maxWidth = constraints.maxWidth;
-                final List<Widget> lines = [];
-                double currentWidth = 0;
-                List<Widget> currentLine = [];
-
-                for (int i = 0; i < encryptedPhrase.length;) {
-                  String word = "";
-                  int startIndex = i;
-
-                  while (i < encryptedPhrase.length && encryptedPhrase[i] != ' ') {
-                    word += encryptedPhrase[i];
-                    i++;
-                  }
-
-                  if (i < encryptedPhrase.length && encryptedPhrase[i] == ' ') {
-                    word += ' ';
-                    i++;
-                  }
-
-                  double wordWidth = word.length * 32;
-
-                  if (currentWidth + wordWidth > maxWidth) {
-                    lines.add(Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: currentLine,
-                    ));
-                    currentLine = [];
-                    currentWidth = 0;
-                  }
-
-                  for (int j = 0; j < word.length; j++) {
-                    String char = word[j];
-
-                    if (char == ' ') {
-                      currentWidth += 20;
-                      currentLine.add(const SizedBox(width: 20));
-                    } else {
-                      currentWidth += 32;
-                      int index = startIndex + j;
-                      focusNodes[index] ??= FocusNode(); // Initialize FocusNode if not exists
-
-                      Widget charWidget = Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 24,
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: TextField(
-                                focusNode: focusNodes[index],
-                                controller: TextEditingController(
-                                  text: guessedLetters[index] ?? '',
-                                ),
-                                readOnly: true, // Prevent default keyboard from opening
-                                textAlign: TextAlign.center,
-                                maxLength: 1,
-                                onTap: () {
-                                  setState(() {
-                                    focusedIndex = index; // Track the focused TextField
-                                    // Highlight all TextFields with the same encryption
-                                    String encryptedChar = encryptedPhrase[index];
-                                    for (int i = 0; i < encryptedPhrase.length; i++) {
-                                      if (encryptedPhrase[i] == encryptedChar) {
-                                        focusNodes[i]?.requestFocus();
-                                      }
-                                    }
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  counterText: '',
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: (focusedIndex != null && encryptedPhrase[index] == encryptedPhrase[focusedIndex!])
-                                          ? Colors.deepOrangeAccent // Highlight color
-                                          : Colors.black, // Default color
-                                      width: 2,
-                                    ),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.deepOrangeAccent, width: 2), // Light blue when focused
-                                  ),
-                                  border: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black, width: 2),
-                                  ),
-                                ),
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: _isDuplicateWithDifferentEncryption(index, guessedLetters)
-                                      ? Colors.red // Red if duplicate with different encryption
-                                      : Colors.black, // Black otherwise
-                                ),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            char,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      );
-                      currentLine.add(charWidget);
-                    }
-                  }
-                }
-
-                if (currentLine.isNotEmpty) {
-                  lines.add(Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: currentLine,
-                  ));
-                }
-
-                return Column(
-                  children: lines,
-                );
-              },
+          // Background Gradient
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.blue.shade800, Colors.orange.shade300], // Lighter orange
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
           ),
 
-          const SizedBox(height: 16),
+          // Cryptogram Display
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: screenHeight * 0.1, // 10% of screen height
+                left: screenWidth * 0.05, // 5% of screen width
+                right: screenWidth * 0.05, // 5% of screen width
+                bottom: screenHeight * 0.2, // 20% of screen height (space for keyboard)
+              ),
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final maxWidth = constraints.maxWidth;
+                      final List<Widget> lines = [];
+                      double currentWidth = 0;
+                      List<Widget> currentLine = [];
 
-          // Custom Keyboard with Turkish characters and delete button
-          CustomKeyboard(
-            onKeyPressed: _onKeyPressed,
-            onDeletePressed: _onDeletePressed,
+                      for (int i = 0; i < encryptedPhrase.length;) {
+                        String word = "";
+                        int startIndex = i;
+
+                        while (i < encryptedPhrase.length && encryptedPhrase[i] != ' ') {
+                          word += encryptedPhrase[i];
+                          i++;
+                        }
+
+                        if (i < encryptedPhrase.length && encryptedPhrase[i] == ' ') {
+                          word += ' ';
+                          i++;
+                        }
+
+                        double wordWidth = word.length * (screenWidth * 0.07); // 7% of screen width
+
+                        if (currentWidth + wordWidth > maxWidth) {
+                          lines.add(Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: currentLine,
+                          ));
+                          currentLine = [];
+                          currentWidth = 0;
+                        }
+
+                        for (int j = 0; j < word.length; j++) {
+                          String char = word[j];
+
+                          if (char == ' ') {
+                            currentWidth += screenWidth * 0.04; // 4% of screen width
+                            currentLine.add(SizedBox(width: screenWidth * 0.04));
+                          } else {
+                            currentWidth += screenWidth * 0.07; // 7% of screen width
+                            int index = startIndex + j;
+                            focusNodes[index] ??= FocusNode();
+
+                            Widget charWidget = Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: screenWidth * 0.07, // 7% of screen width
+                                  height: screenWidth * 0.07, // 7% of screen width
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: (focusedIndex != null && encryptedPhrase[index] == encryptedPhrase[focusedIndex!])
+                                          ? Colors.orange.shade800 // Highlight selected text field
+                                          : Colors.grey.shade800, // Darker border
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: (focusedIndex != null && encryptedPhrase[index] == encryptedPhrase[focusedIndex!])
+                                            ? Colors.orange.withOpacity(0.3)
+                                            : Colors.transparent,
+                                        spreadRadius: 2,
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Center(
+                                    child: TextField(
+                                      focusNode: focusNodes[index],
+                                      controller: TextEditingController(
+                                        text: guessedLetters[index] ?? '',
+                                      ),
+                                      readOnly: true,
+                                      textAlign: TextAlign.center,
+                                      maxLength: 1,
+                                      onTap: () {
+                                        setState(() {
+                                          focusedIndex = index;
+                                          String encryptedChar = encryptedPhrase[index];
+                                          for (int i = 0; i < encryptedPhrase.length; i++) {
+                                            if (encryptedPhrase[i] == encryptedChar) {
+                                              focusNodes[i]?.requestFocus();
+                                            }
+                                          }
+                                        });
+                                      },
+                                      decoration: const InputDecoration(
+                                        counterText: '',
+                                        border: InputBorder.none,
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 20, // Reduced font size
+                                        fontWeight: FontWeight.bold,
+                                        color: _isDuplicateWithDifferentEncryption(index, guessedLetters)
+                                            ? Colors.red
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  char,
+                                  style: const TextStyle(
+                                    fontSize: 14, // Reduced font size
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            );
+                            currentLine.add(charWidget);
+                          }
+                        }
+                      }
+
+                      if (currentLine.isNotEmpty) {
+                        lines.add(Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: currentLine,
+                        ));
+                      }
+
+                      return Column(
+                        children: lines,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // Custom Keyboard (Fixed at the bottom)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 75,
+            child: Container(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard overlap
+              ),
+              child: Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                margin: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.05, // 5% of screen width
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CustomKeyboard(
+                    onKeyPressed: _onKeyPressed,
+                    onDeletePressed: _onDeletePressed,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -341,53 +409,65 @@ class CustomKeyboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 8.0,
-        runSpacing: 8.0,
-        children: [
-          ...['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G']
-              .map((letter) => _buildKey(letter))
-              .toList(),
-          ...['Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M']
-              .map((letter) => _buildKey(letter))
-              .toList(),
-          ...['N', 'O', 'Ö', 'P', 'Q', 'R', 'S', 'Ş']
-              .map((letter) => _buildKey(letter))
-              .toList(),
-          ...['T', 'U', 'Ü', 'V', 'W', 'X', 'Y', 'Z']
-              .map((letter) => _buildKey(letter))
-              .toList(),
-          _buildDeleteButton(),
-        ],
-      ),
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8.0,
+      runSpacing: 8.0,
+      children: [
+        ...['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G']
+            .map((letter) => _buildKey(letter, screenWidth))
+            .toList(),
+        ...['Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M']
+            .map((letter) => _buildKey(letter, screenWidth))
+            .toList(),
+        ...['N', 'O', 'Ö', 'P', 'Q', 'R', 'S', 'Ş']
+            .map((letter) => _buildKey(letter, screenWidth))
+            .toList(),
+        ...['T', 'U', 'Ü', 'V', 'W', 'X', 'Y', 'Z']
+            .map((letter) => _buildKey(letter, screenWidth))
+            .toList(),
+        _buildDeleteButton(screenWidth),
+      ],
     );
   }
 
-  Widget _buildKey(String letter) {
+  Widget _buildKey(String letter, double screenWidth) {
     return SizedBox(
-      width: 48.0,
-      height: 48.0,
+      width: screenWidth * 0.1, // 10% of screen width
+      height: screenWidth * 0.1, // 10% of screen width
       child: ElevatedButton(
         onPressed: () => onKeyPressed(letter),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue.shade800,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+          shadowColor: Colors.blue.withOpacity(0.3),
+        ),
         child: Text(
           letter,
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(fontSize: 16, color: Colors.white), // Reduced font size
         ),
       ),
     );
   }
 
-  Widget _buildDeleteButton() {
+  Widget _buildDeleteButton(double screenWidth) {
     return SizedBox(
-      width: 96.0,
-      height: 48.0,
+      width: screenWidth * 0.2, // 20% of screen width
+      height: screenWidth * 0.1, // 10% of screen width
       child: ElevatedButton(
         onPressed: onDeletePressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.redAccent[100],
+          backgroundColor: Colors.orange.shade600,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+          shadowColor: Colors.orange.withOpacity(0.3),
         ),
         child: const Icon(
           Icons.backspace,
@@ -410,10 +490,9 @@ void _checkSolution(context, phrase, guessedLetters) {
     }
   }
 
-  // Show a dialog or snackbar with the result
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(isCorrect ? "Correct! 🎉" : "Wrong! Try again. ❌"),
+      content: Text(isCorrect ? "Doğru! 🎉" : "Yanlış! Tekrar Deneyin. ❌"),
       backgroundColor: isCorrect ? Colors.green : Colors.red,
     ),
   );

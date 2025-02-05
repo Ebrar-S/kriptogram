@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kriptogram/screens/home.dart';
 
 void main() {
@@ -14,8 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kriptogram',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.nunitoTextTheme(),
       ),
       home: CryptogramGameHome(),
     );
