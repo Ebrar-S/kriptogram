@@ -13,12 +13,32 @@ class _ProfilePageState extends State<ProfilePage> {
   String _bio = "A passionate Flutter developer.";
   String _phoneNumber = "123-456-7890";
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _bioController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _bioController;
+  late TextEditingController _phoneController;
 
   bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with current profile data
+    _nameController = TextEditingController(text: _name);
+    _emailController = TextEditingController(text: _email);
+    _bioController = TextEditingController(text: _bio);
+    _phoneController = TextEditingController(text: _phoneNumber);
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to avoid memory leaks
+    _nameController.dispose();
+    _emailController.dispose();
+    _bioController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   // This function is to toggle between view and edit mode
   void _toggleEditMode() {
@@ -31,12 +51,6 @@ class _ProfilePageState extends State<ProfilePage> {
         _email = _emailController.text;
         _bio = _bioController.text;
         _phoneNumber = _phoneController.text;
-      } else {
-        // Populate the controllers with current data for editing
-        _nameController.text = _name;
-        _emailController.text = _email;
-        _bioController.text = _bio;
-        _phoneController.text = _phoneNumber;
       }
     });
   }
@@ -44,25 +58,27 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
+      backgroundColor: Colors.blue.shade50, // Matching the gradient background
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[400],
+        backgroundColor: Colors.blue.shade800, // Matching the app bar color
+        elevation: 0,
+        iconTheme: IconThemeData(
+            color: Colors.white
+        ),
         title: Text(
           'Profile',
-          style: GoogleFonts.sarpanch(
-            textStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              letterSpacing: .5,
-            ),
+          style: GoogleFonts.nunito(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        automaticallyImplyLeading: false,  // Prevent default back button
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(
               _isEditing ? Icons.save : Icons.edit,
-              color: Colors.white70,
+              color: Colors.white,
             ),
             onPressed: _toggleEditMode,
           ),
@@ -70,49 +86,61 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SizedBox(height: 50),
-            Center(
-              child: CircleAvatar(
-                radius: 60,
-                //backgroundImage: AssetImage('assets/profile_picture.jpg'),
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  Center(
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.blue.shade800,
+                      child: Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+            
+                  // Name Field
+                  _buildTextField(
+                    label: "Name",
+                    controller: _nameController,
+                    enabled: _isEditing,
+                  ),
+            
+                  // Email Field
+                  _buildTextField(
+                    label: "Email",
+                    controller: _emailController,
+                    enabled: _isEditing,
+                  ),
+            
+                  // Bio Field
+                  _buildTextField(
+                    label: "Bio",
+                    controller: _bioController,
+                    enabled: _isEditing,
+                  ),
+            
+                  // Phone Number Field
+                  _buildTextField(
+                    label: "Phone Number",
+                    controller: _phoneController,
+                    enabled: _isEditing,
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 30),
-
-            // Name Field
-            _buildTextField(
-              label: "Name",
-              controller: _nameController,
-              enabled: _isEditing,
-              initialValue: _name,
-            ),
-
-            // Email Field
-            _buildTextField(
-              label: "Email",
-              controller: _emailController,
-              enabled: _isEditing,
-              initialValue: _email,
-            ),
-
-            // Bio Field
-            _buildTextField(
-              label: "Bio",
-              controller: _bioController,
-              enabled: _isEditing,
-              initialValue: _bio,
-            ),
-
-            // Phone Number Field
-            _buildTextField(
-              label: "Phone Number",
-              controller: _phoneController,
-              enabled: _isEditing,
-              initialValue: _phoneNumber,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -122,29 +150,60 @@ class _ProfilePageState extends State<ProfilePage> {
     required String label,
     required TextEditingController controller,
     required bool enabled,
-    required String initialValue,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(
         controller: controller,
         enabled: enabled,
         decoration: InputDecoration(
           labelText: label,
-          hintText: initialValue,
-          border: OutlineInputBorder(),
+          labelStyle: GoogleFonts.nunito(
+            color: Colors.blue.shade800,
+            fontWeight: FontWeight.bold,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade800),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade800),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.blue.shade800, width: 2),
+          ),
           suffixIcon: enabled
               ? IconButton(
-            icon: Icon(Icons.check),
+            icon: Icon(Icons.check, color: Colors.blue.shade800),
             onPressed: () {
               if (controller.text.isNotEmpty) {
                 setState(() {
-                  initialValue = controller.text;
+                  // Update the corresponding profile field
+                  switch (label) {
+                    case "Name":
+                      _name = controller.text;
+                      break;
+                    case "Email":
+                      _email = controller.text;
+                      break;
+                    case "Bio":
+                      _bio = controller.text;
+                      break;
+                    case "Phone Number":
+                      _phoneNumber = controller.text;
+                      break;
+                  }
                 });
               }
             },
           )
               : null,
+        ),
+        style: GoogleFonts.nunito(
+          color: Colors.blue.shade800,
+          fontSize: 16,
         ),
       ),
     );

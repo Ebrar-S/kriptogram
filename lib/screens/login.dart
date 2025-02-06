@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kriptogram/screens/register.dart';
-
 import 'home.dart';
 
 class LoginPage extends StatelessWidget {
@@ -13,126 +11,153 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.deepPurple[100],
-        appBar: AppBar(
-          backgroundColor: Colors.deepPurple[100],
-          title: const Text(""),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Builder(
-                builder: (context) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 125),
-                        Text(
-                          'EcoMind',
-                          style: GoogleFonts.sarpanch(
-                            textStyle: TextStyle(
-                                color: Colors.deepPurple[400],
-                                letterSpacing: .5),
-                            fontSize: 50,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black38,
-                                offset: Offset(0, 1),
-                                blurRadius: 4,
-                              ),
-                            ],
-                          ),
+    return Scaffold(
+      backgroundColor: Colors.blue.shade50, // Matching the gradient background
+      appBar: AppBar(
+        backgroundColor: Colors.blue.shade800, // Matching the app bar color
+        title: Text('',),
+        automaticallyImplyLeading: false, // Prevent default back button
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Column(
+                children: [
+                  const SizedBox(height: 100),
+                  Text(
+                    'Kriptogram',
+                    style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                        color: Colors.blue.shade800,
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
+                      shadows: [
+                        Shadow(
+                          color: Colors.black38,
+                          offset: Offset(0, 2),
+                          blurRadius: 4,
                         ),
-                        const SizedBox(height: 125),
-                        TextField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                color: Color(0xFF7E57C2),
-                                width: 2,
-                              ),
-                            ),
-                            labelText: 'email',
-                            prefixIcon: Icon(Icons.person,
-                                color: Colors.deepPurple[400]),
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                color: Color(0xFF7E57C2),
-                                width: 2,
-                              ),
-                            ),
-                            labelText: 'password',
-                            prefixIcon: Icon(Icons.password,
-                                color: Colors.deepPurple[400]),
-                          ),
-                        ),
-                        const SizedBox(height: 35),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => CryptogramGameHome()),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple[400],
-                              foregroundColor: Colors.white70,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 40,
-                              ),
-                              elevation: 2),
-                          child: Text(
-                            'login',
-                            style: GoogleFonts.sarpanch(
-                              textStyle: TextStyle(
-                                  color: Colors.white70, letterSpacing: .5),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                                );
-                              },
-                              child: Text(
-                                'sign up',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black38,
-                                      offset: Offset(0, 1),
-                                      blurRadius: 4,
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        )
                       ],
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 100),
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.blue.shade800,
+                                  width: 2,
+                                ),
+                              ),
+                              labelText: 'Email',
+                              labelStyle: GoogleFonts.nunito(
+                                color: Colors.grey.shade600,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.person,
+                                color: Colors.blue.shade800,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: Colors.blue.shade800,
+                                  width: 2,
+                                ),
+                              ),
+                              labelText: 'Password',
+                              labelStyle: GoogleFonts.nunito(
+                                color: Colors.grey.shade600,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock,
+                                color: Colors.blue.shade800,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CryptogramGameHome(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue.shade800,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                              shadowColor: Colors.blue.withOpacity(0.3),
+                            ),
+                            child: Text(
+                              'Login',
+                              style: GoogleFonts.nunito(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SignUpPage(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Don’t have an account? Sign Up',
+                              style: GoogleFonts.nunito(
+                                color: Colors.blue.shade800,
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

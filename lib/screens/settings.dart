@@ -9,119 +9,123 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
+      backgroundColor: Colors.blue.shade50, // Matching the gradient background
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[400],
+        backgroundColor: Colors.blue.shade800, // Matching the app bar color
+        elevation: 0,
+        iconTheme: IconThemeData(
+            color: Colors.white
+        ),
         title: Text(
           'Settings',
-          style: GoogleFonts.sarpanch(
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              letterSpacing: .5,
-            ),
+          style: GoogleFonts.nunito(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        automaticallyImplyLeading: false,  // Prevent default back button
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // Profile Section
-            ListTile(
-              leading: const Icon(Icons.person, color: Colors.deepPurple),
-              title: Text(
-                'Profile',
-                style: GoogleFonts.sarpanch(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple[600],
+        child: Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ListView(
+            children: [
+              // Profile Section
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.blue.shade800),
+                title: Text(
+                  'Profile',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade800,
                   ),
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-            ),
-            const Divider(),
+              const Divider(),
 
-            // Change Theme Section
-            ListTile(
-              leading: const Icon(Icons.palette, color: Colors.deepPurple),
-              title: Text(
-                'Change Theme',
-                style: GoogleFonts.sarpanch(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple[600],
+              // Change Theme Section
+              ListTile(
+                leading: Icon(Icons.palette, color: Colors.blue.shade800),
+                title: Text(
+                  'Change Theme',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade800,
                   ),
                 ),
+                onTap: () {
+                  // Implement Theme Change Logic
+                },
               ),
-              onTap: () {
-                // Implement Theme Change Logic
-              },
-            ),
-            const Divider(),
+              const Divider(),
 
-            // Notifications Section
-            ListTile(
-              leading: const Icon(Icons.notifications, color: Colors.deepPurple),
-              title: Text(
-                'Notifications',
-                style: GoogleFonts.sarpanch(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple[600],
+              // Notifications Section
+              ListTile(
+                leading: Icon(Icons.notifications, color: Colors.blue.shade800),
+                title: Text(
+                  'Notifications',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade800,
                   ),
                 ),
+                onTap: () {
+                  // Implement Notification Preferences Logic
+                },
               ),
-              onTap: () {
-                // Implement Notification Preferences Logic
-              },
-            ),
-            const Divider(),
+              const Divider(),
 
-            // Privacy Section
-            ListTile(
-              leading: const Icon(Icons.lock, color: Colors.deepPurple),
-              title: Text(
-                'Privacy',
-                style: GoogleFonts.sarpanch(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple[600],
+              // Privacy Section
+              ListTile(
+                leading: Icon(Icons.lock, color: Colors.blue.shade800),
+                title: Text(
+                  'Privacy',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade800,
                   ),
                 ),
+                onTap: () {
+                  // Implement Privacy Settings Logic
+                },
               ),
-              onTap: () {
-                // Implement Privacy Settings Logic
-              },
-            ),
-            const Divider(),
+              const Divider(),
 
-            // Log Out Section
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.deepPurple),
-              title: Text(
-                'Log Out',
-                style: GoogleFonts.sarpanch(
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    color: Colors.deepPurple[600],
+              // Log Out Section
+              ListTile(
+                leading: Icon(Icons.logout, color: Colors.blue.shade800),
+                title: Text(
+                  'Log Out',
+                  style: GoogleFonts.nunito(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade800,
                   ),
                 ),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

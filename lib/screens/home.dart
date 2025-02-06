@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart'; // For custom fonts
-
-void main() {
-  runApp(MaterialApp(
-    home: CryptogramGameHome(),
-    theme: ThemeData(
-      primarySwatch: Colors.blue,
-      textTheme: GoogleFonts.nunitoTextTheme(), // Use a modern font
-    ),
-  ));
-}
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kriptogram/screens/settings.dart'; // For custom fonts
 
 class CryptogramGameHome extends StatefulWidget {
   @override
@@ -20,12 +11,12 @@ class CryptogramGameHome extends StatefulWidget {
 
 class _CryptogramGameHomeState extends State<CryptogramGameHome> {
   final List<String> phrases = [
-    "HELLO FLUTTER",
-    "WELCOME TO THE GAME",
-    "HAVE FUN CODING"
+    "Merhaba",
+    "deneme deneme bir iki deneme",
+    "bildiğim tek şey hiçbir şey bilmediğimdir."
   ];
 
-  String phrase = "HELLO FLUTTER";
+  String phrase = "Merhaba";
   String encryptedPhrase = "";
   final Map<int, String> guessedLetters = {};
   final Map<String, String> encryptionMap = {};
@@ -145,8 +136,11 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
 
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
         title: Text(
-          'Kriptogram Oyunu',
+          'Kriptogram',
           style: GoogleFonts.nunito(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -156,14 +150,25 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
         backgroundColor: Colors.blue.shade800,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue.shade800, Colors.orange.shade300], // Lighter orange
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              colors: [Colors.blue.shade800, Colors.blue.shade50],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
           child: ListView(
@@ -206,7 +211,7 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.blue.shade800, Colors.orange.shade300], // Lighter orange
+                colors: [Colors.blue.shade50, Colors.white],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -217,18 +222,18 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
           SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.only(
-                top: screenHeight * 0.1, // 10% of screen height
-                left: screenWidth * 0.05, // 5% of screen width
-                right: screenWidth * 0.05, // 5% of screen width
-                bottom: screenHeight * 0.2, // 20% of screen height (space for keyboard)
+                top: screenHeight * 0.075,
+                left: screenWidth * 0.01,
+                right: screenWidth * 0.01,
+                bottom: screenHeight * 0.1,
               ),
               child: Card(
-                elevation: 8,
+                elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       final maxWidth = constraints.maxWidth;
@@ -250,7 +255,7 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
                           i++;
                         }
 
-                        double wordWidth = word.length * (screenWidth * 0.07); // 7% of screen width
+                        double wordWidth = word.length * (screenWidth * 0.07);
 
                         if (currentWidth + wordWidth > maxWidth) {
                           lines.add(Row(
@@ -265,10 +270,10 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
                           String char = word[j];
 
                           if (char == ' ') {
-                            currentWidth += screenWidth * 0.04; // 4% of screen width
+                            currentWidth += screenWidth * 0.04;
                             currentLine.add(SizedBox(width: screenWidth * 0.04));
                           } else {
-                            currentWidth += screenWidth * 0.07; // 7% of screen width
+                            currentWidth += screenWidth * 0.05;
                             int index = startIndex + j;
                             focusNodes[index] ??= FocusNode();
 
@@ -276,57 +281,50 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(
-                                  width: screenWidth * 0.07, // 7% of screen width
-                                  height: screenWidth * 0.07, // 7% of screen width
+                                  width: screenWidth * 0.06, // Reduced from 0.07
+                                  height: screenWidth * 0.06, // Reduced from 0.07
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: (focusedIndex != null && encryptedPhrase[index] == encryptedPhrase[focusedIndex!])
-                                          ? Colors.orange.shade800 // Highlight selected text field
-                                          : Colors.grey.shade800, // Darker border
+                                          ? Colors.blue.shade800
+                                          : Colors.grey.shade300,
                                       width: 2,
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: (focusedIndex != null && encryptedPhrase[index] == encryptedPhrase[focusedIndex!])
-                                            ? Colors.orange.withOpacity(0.3)
-                                            : Colors.transparent,
-                                        spreadRadius: 2,
-                                        blurRadius: 4,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
                                   ),
                                   child: Center(
-                                    child: TextField(
-                                      focusNode: focusNodes[index],
-                                      controller: TextEditingController(
-                                        text: guessedLetters[index] ?? '',
-                                      ),
-                                      readOnly: true,
-                                      textAlign: TextAlign.center,
-                                      maxLength: 1,
-                                      onTap: () {
-                                        setState(() {
-                                          focusedIndex = index;
-                                          String encryptedChar = encryptedPhrase[index];
-                                          for (int i = 0; i < encryptedPhrase.length; i++) {
-                                            if (encryptedPhrase[i] == encryptedChar) {
-                                              focusNodes[i]?.requestFocus();
+                                    child: Transform.translate(
+                                      offset: const Offset(1, -3),
+                                      child: TextField(
+                                        focusNode: focusNodes[index],
+                                        controller: TextEditingController(
+                                          text: guessedLetters[index] ?? '',
+                                        ),
+                                        readOnly: true,
+                                        textAlign: TextAlign.center,
+                                        maxLength: 1,
+                                        onTap: () {
+                                          setState(() {
+                                            focusedIndex = index;
+                                            String encryptedChar = encryptedPhrase[index];
+                                            for (int i = 0; i < encryptedPhrase.length; i++) {
+                                              if (encryptedPhrase[i] == encryptedChar) {
+                                                focusNodes[i]?.requestFocus();
+                                              }
                                             }
-                                          }
-                                        });
-                                      },
-                                      decoration: const InputDecoration(
-                                        counterText: '',
-                                        border: InputBorder.none,
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 20, // Reduced font size
-                                        fontWeight: FontWeight.bold,
-                                        color: _isDuplicateWithDifferentEncryption(index, guessedLetters)
-                                            ? Colors.red
-                                            : Colors.black,
+                                          });
+                                        },
+                                        decoration: const InputDecoration(
+                                          counterText: '',
+                                          border: InputBorder.none,
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: _isDuplicateWithDifferentEncryption(index, guessedLetters)
+                                              ? Colors.red
+                                              : Colors.black,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -335,7 +333,7 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
                                 Text(
                                   char,
                                   style: const TextStyle(
-                                    fontSize: 14, // Reduced font size
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.grey,
                                   ),
@@ -368,21 +366,21 @@ class _CryptogramGameHomeState extends State<CryptogramGameHome> {
           Positioned(
             left: 0,
             right: 0,
-            bottom: 75,
+            bottom: 100,
             child: Container(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom, // Adjust for keyboard overlap
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Card(
-                elevation: 8,
+                elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 margin: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.05, // 5% of screen width
+                  horizontal: screenWidth * 0.02,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: CustomKeyboard(
                     onKeyPressed: _onKeyPressed,
                     onDeletePressed: _onDeletePressed,
@@ -416,16 +414,10 @@ class CustomKeyboard extends StatelessWidget {
       spacing: 8.0,
       runSpacing: 8.0,
       children: [
-        ...['A', 'B', 'C', 'Ç', 'D', 'E', 'F', 'G']
+        ...['A', 'B', 'C','Ç', 'D', 'E', 'F', 'G', 'Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M']
             .map((letter) => _buildKey(letter, screenWidth))
             .toList(),
-        ...['Ğ', 'H', 'I', 'İ', 'J', 'K', 'L', 'M']
-            .map((letter) => _buildKey(letter, screenWidth))
-            .toList(),
-        ...['N', 'O', 'Ö', 'P', 'Q', 'R', 'S', 'Ş']
-            .map((letter) => _buildKey(letter, screenWidth))
-            .toList(),
-        ...['T', 'U', 'Ü', 'V', 'W', 'X', 'Y', 'Z']
+        ...['N', 'O', 'Ö', 'P', 'R', 'S', 'Ş', 'T', 'U', 'Ü', 'V', 'Y', 'Z']
             .map((letter) => _buildKey(letter, screenWidth))
             .toList(),
         _buildDeleteButton(screenWidth),
@@ -435,8 +427,8 @@ class CustomKeyboard extends StatelessWidget {
 
   Widget _buildKey(String letter, double screenWidth) {
     return SizedBox(
-      width: screenWidth * 0.1, // 10% of screen width
-      height: screenWidth * 0.1, // 10% of screen width
+      width: screenWidth * 0.09,
+      height: screenWidth * 0.09,
       child: ElevatedButton(
         onPressed: () => onKeyPressed(letter),
         style: ElevatedButton.styleFrom(
@@ -446,10 +438,11 @@ class CustomKeyboard extends StatelessWidget {
           ),
           elevation: 2,
           shadowColor: Colors.blue.withOpacity(0.3),
+          padding: EdgeInsets.zero,
         ),
         child: Text(
           letter,
-          style: const TextStyle(fontSize: 16, color: Colors.white), // Reduced font size
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
       ),
     );
@@ -457,17 +450,17 @@ class CustomKeyboard extends StatelessWidget {
 
   Widget _buildDeleteButton(double screenWidth) {
     return SizedBox(
-      width: screenWidth * 0.2, // 20% of screen width
-      height: screenWidth * 0.1, // 10% of screen width
+      width: screenWidth * 0.18,
+      height: screenWidth * 0.09,
       child: ElevatedButton(
         onPressed: onDeletePressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.orange.shade600,
+          backgroundColor: Colors.red.shade400,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           elevation: 2,
-          shadowColor: Colors.orange.withOpacity(0.3),
+          shadowColor: Colors.red.withOpacity(0.3),
         ),
         child: const Icon(
           Icons.backspace,
@@ -483,7 +476,12 @@ void _checkSolution(context, phrase, guessedLetters) {
 
   for (int i = 0; i < phrase.length; i++) {
     if (phrase[i] != ' ') {
-      if (guessedLetters[i] == null || guessedLetters[i]!.isEmpty || guessedLetters[i] != phrase[i]) {
+      print(guessedLetters[i]);
+      print(phrase[i]);
+      // Convert both to lowercase for case-insensitive comparison
+      if (guessedLetters[i] == null ||
+          guessedLetters[i]!.isEmpty ||
+          guessedLetters[i]!.toLowerCase() != phrase[i].toLowerCase()) {
         isCorrect = false;
         break;
       }
@@ -492,7 +490,7 @@ void _checkSolution(context, phrase, guessedLetters) {
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      content: Text(isCorrect ? "Doğru! 🎉" : "Yanlış! Tekrar Deneyin. ❌"),
+      content: Text(isCorrect ? "Correct! 🎉" : "Incorrect! Try Again. ❌"),
       backgroundColor: isCorrect ? Colors.green : Colors.red,
     ),
   );
