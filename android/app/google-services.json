@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "984542992013",
+    "project_id": "kriptogram-85475",
+    "storage_bucket": "kriptogram-85475.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984542992013:android:9405975db6cee7e852f4c4",
+        "android_client_info": {
+          "package_name": "com.example.kriptogram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDltMIGkBqlZszsYT2O8CyA9UeoYXmfvZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
